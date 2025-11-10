@@ -1,0 +1,17 @@
+{
+  "name": "trace-the-package-game",
+  "version": "1.0.0",
+  "description": "Interactive multiplayer game demonstrating Synovus' Tracer System",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["game", "multiplayer", "synovus", "tracer", "socket.io"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.6.1",
+    "qrcode": "^1.5.3"
+  }
+}

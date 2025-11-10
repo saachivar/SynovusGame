@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trace the Package - Admin Display</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease-in;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .game-screen {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* Waiting Screen */
+        .waiting-screen {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .qr-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 30px auto;
+            max-width: 500px;
+            animation: pulse 2s infinite;
+        }
+        
+        .qr-code {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            display: inline-block;
+            margin: 20px 0;
+        }
+        
+        .qr-code img {
+            display: block;
+            width: 300px;
+            height: 300px;
+        }
+        
+        .join-url {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        
+        .players-waiting {
+            margin-top: 40px;
+        }
+        
+        .player-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .player-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            animation: slideIn 0.5s ease-out;
+            transition: transform 0.3s;
+        }
+        
+        .player-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .player-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .start-btn {
+            padding: 20px 60px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s;
+            animation: bounce 2s infinite;
+        }
+        
+        .start-btn:hover {
+            background: #059669;
+            transform: scale(1.1);
+        }
+        
+        .start-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            animation: none;
+        }
+        
+        /* Playing Screen */
+        .round-banner {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        .round-banner h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .round-banner p {
+            font-size: 1.2rem;
+        }
+        
+        .teams-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .team-display {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 25px;
+            border-radius: 20px;
+            color: white;
+            animation: slideIn 0.6s ease-out;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .team-display:nth-child(2) {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .team-display:nth-child(3) {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .team-display:nth-child(4) {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .team-name {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .team-members {
+            margin-bottom: 20px;
+        }
+        
+        .member-tag {
+            background: rgba(255,255,255,0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .package-track {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 15px 0;
+            animation: slideUp 0.4s ease-out;
+        }
+        
+        .package-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .package-id {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .package-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-transit { background: #dbeafe; color: #1e40af; }
+        .status-delivered { background: #d1fae5; color: #065f46; }
+        .status-duplicate { background: #fee2e2; color: #991b1b; }
+        .status-delayed { background: #fecaca; color: #7f1d1d; }
+        
+        .tracking-visual {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            margin: 30px 0;
+        }
+        
+        .hub-point {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hub-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 2rem;
+            transition: all 0.5s ease;
+        }
+        
+        .hub-icon.active {
+            background: #667eea;
+            border-color: #667eea;
+            transform: scale(1.3);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .hub-icon.completed {
+            background: #10b981;
+            border-color: #10b981;
+            transform: scale(1.1);
+        }
+        
+        .hub-icon.delayed {
+            background: #ef4444;
+            border-color: #ef4444;
+            animation: pulse 1s infinite;
+        }
+        
+        .hub-name {
+            font-size: 0.9rem;
+            color: #4b5563;
+            font-weight: 600;
+        }
+        
+        .hub-system {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-top: 5px;
+        }
+        
+        .progress-line {
+            position: absolute;
+            top: 35px;
+            left: 35px;
+            right: 35px;
+            height: 6px;
+            background: #e5e7eb;
+            z-index: 1;
+            border-radius: 3px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.8s ease;
+            border-radius: 3px;
+        }
+        
+        .package-icon {
+            position: absolute;
+            top: 15px;
+            font-size: 2.5rem;
+            transition: left 0.8s ease;
+            z-index: 3;
+            animation: bounce 1s infinite;
+        }
+        
+        .control-panel {
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 15px;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3);
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        /* Reveal Screen */
+        .reveal-screen {
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
+        
+        .reveal-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .reveal-banner h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .reveal-banner p {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .mapping-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .mapping-card {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            padding: 30px;
+            border-radius: 15px;
+            animation: slideIn 0.6s ease-out;
+            transition: transform 0.3s;
+        }
+        
+        .mapping-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .mapping-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .mapping-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .mapping-subtitle {
+            font-size: 1rem;
+            color: #6b7280;
+        }
+        
+        .reset-btn {
+            padding: 20px 60px;
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            margin-top: 40px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .reset-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Trace the Package</h1>
+            <p>Interactive Demo for Synovus' Tracer System</p>
+        </div>
+        
+        <div class="game-screen">
+            <!-- Waiting Screen -->
+            <div id="waitingScreen" class="waiting-screen">
+                <h2 style="color: #667eea; font-size: 2.5rem; margin-bottom: 20px;">
+                    Scan to Join the Game!
+                </h2>
+                
+                <div class="qr-section">
+                    <div class="qr-code">
+                        <img id="qrCodeImage" src="" alt="QR Code">
+                    </div>
+                    <div class="join-url" id="joinUrl"></div>
+                </div>
+                
+                <div class="players-waiting">
+                    <h3 style="color: #4b5563; font-size: 1.8rem; margin-bottom: 20px;">
+                        Players Joined (<span id="playerCount">0</span>)
+                    </h3>
+                    <div class="player-grid" id="playerGrid"></div>
+                    
+                    <button class="start-btn" id="startBtn" disabled>
+                        Start Game
+                    </button>
+                    <p style="color: #ef4444; margin-top: 15px; font-size: 1.1rem;" id="minPlayerMsg">
+                        Waiting for at least 2 players...
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Playing Screen -->
+            <div id="playingScreen" class="hidden">
+                <div class="round-banner" id="roundBanner">
+                    <h2>Round 1: Shipping Begins</h2>
+                    <p>Move your packages through each hub!</p>
+                </div>
+                
+                <div class="teams-container" id="teamsContainer"></div>
+                
+                <div class="control-panel" id="controlPanel">
+                    <button class="btn btn-warning" id="round2Btn">
+                        🎲 Start Round 2: Add Chaos
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Reveal Screen -->
+            <div id="revealScreen" class="hidden reveal-screen">
+                <div class="reveal-banner">
+                    <h2>🎉 The Big Reveal!</h2>
+                    <p>
+                        Just like you tracked your packages through the delivery system,
+                        <strong>Synovus' Tracer System</strong> monitors every payment's journey
+                        from initiation to confirmation!
+                    </p>
+                </div>
+                
+                <div class="mapping-grid">
+                    <div class="mapping-card">
+                        <div class="mapping-icon">📦</div>
+                        <div class="mapping-title">Package</div>
+                        <div class="mapping-subtitle">Synovus Transaction</div>
+                    </div>
+                    <div class="mapping-card">
+                        <div class="mapping-icon">🏷️</div>
+                        <div class="mapping-title">Tracking ID</div>
+                        <div class="mapping-subtitle">Trace ID</div>
+                    </div>
+                    <div class="mapping-card">
+                        <div class="mapping-icon">🏭</div>
+                        <div class="mapping-title">Warehouse</div>
+                        <div class="mapping-subtitle">Frontend System</div>
+                    </div>
+                    <div class="mapping-card">
+                        <div class="mapping-icon">🚚</div>
+                        <div class="mapping-title">Truck</div>
+                        <div class="mapping-subtitle">API Layer</div>
+                    </div>
+                    <div class="mapping-card">
+                        <div class="mapping-icon">📦</div>
+                        <div class="mapping-title">Sorting Center</div>
+                        <div class="mapping-subtitle">Backend System</div>
+                    </div>
+                    <div class="mapping-card">
+                        <div class="mapping-icon">🏠</div>
+                        <div class="mapping-title">Doorstep</div>
+                        <div class="mapping-subtitle">User Confirmation</div>
+                    </div>
+                </div>
+                
+                <p style="font-size: 1.3rem; color: #4b5563; max-width: 800px; margin: 40px auto; line-height: 1.8;">
+                    Our trace ID ensures every transaction is <strong>accounted for</strong>,
+                    no <strong>duplicates</strong> occur, and <strong>latency</strong> is detected early!
+                </p>
+                
+                <button class="reset-btn" id="resetBtn">
+                    🔄 Play Again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        const HUBS = [
+            { icon: '🏭', label: 'Warehouse', system: 'Frontend System' },
+            { icon: '🚚', label: 'Truck', system: 'API Layer' },
+            { icon: '📦', label: 'Sorting Center', system: 'Backend System' },
+            { icon: '🏠', label: 'Doorstep', system: 'User Confirmation' }
+        ];
+
+        // Load QR code
+        fetch('/qr')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('qrCodeImage').src = data.qrCode;
+                document.getElementById('joinUrl').textContent = data.url;
+            });
+
+        // Handle game state updates
+        socket.on('gameState', (state) => {
+            updateDisplay(state);
+        });
+
+        function updateDisplay(state) {
+            // Update player count
+            document.getElementById('playerCount').textContent = state.players.length;
+            
+            // Update player grid
+            const playerGrid = document.getElementById('playerGrid');
+            playerGrid.innerHTML = state.players.map((player, idx) => `
+                <div class="player-card" style="animation-delay: ${idx * 0.1}s">
+                    <div class="player-name">👤 ${player.name}</div>
+                </div>
+            `).join('');
+            
+            // Enable/disable start button
+            const startBtn = document.getElementById('startBtn');
+            if (state.players.length >= 2) {
+                startBtn.disabled = false;
+                document.getElementById('minPlayerMsg').style.display = 'none';
+            } else {
+                startBtn.disabled = true;
+                document.getElementById('minPlayerMsg').style.display = 'block';
+            }
+            
+            // Show appropriate screen
+            if (state.status === 'waiting') {
+                showScreen('waitingScreen');
+            } else if (state.status === 'playing') {
+                showScreen('playingScreen');
+                updateGameDisplay(state);
+            } else if (state.status === 'reveal') {
+                showScreen('revealScreen');
+            }
+        }
+
+        function updateGameDisplay(state) {
+            // Update round banner
+            const roundBanner = document.getElementById('roundBanner');
+            if (state.currentRound === 1) {
+                roundBanner.innerHTML = `
+                    <h2>Round 1: Shipping Begins</h2>
+                    <p>Move your packages through each hub!</p>
+                `;
+            } else if (state.currentRound === 2) {
+                roundBanner.innerHTML = `
+                    <h2>Round 2: Holiday Chaos</h2>
+                    <p>⚠️ Some packages might get duplicated or mixed up...</p>
+                `;
+            } else if (state.currentRound === 3) {
+                roundBanner.innerHTML = `
+                    <h2>Round 3: Trace Alert</h2>
+                    <p>🔴 A delay has been detected at one hub...</p>
+                `;
+            }
+            
+            // Update teams display
+            const teamsContainer = document.getElementById('teamsContainer');
+            teamsContainer.innerHTML = state.teams.map((team, idx) => `
+                <div class="team-display" style="animation-delay: ${idx * 0.1}s">
+                    <div class="team-name">${team.name}</div>
+                    <div class="team-members">
+                        ${team.members.map(member => `
+                            <span class="member-tag">${member}</span>
+                        `).join('')}
+                    </div>
+                    ${team.packages.map(pkg => renderPackage(pkg)).join('')}
+                </div>
+            `).join('');
+            
+            // Update control panel
+            const controlPanel = document.getElementById('controlPanel');
+            if (state.currentRound === 1) {
+                controlPanel.innerHTML = `
+                    <button class="btn btn-warning" onclick="nextRound()">
+                        🎲 Start Round 2: Add Chaos
+                    </button>
+                `;
+            } else if (state.currentRound === 2) {
+                controlPanel.innerHTML = `
+                    <button class="btn btn-warning" onclick="nextRound()">
+                        ⚠️ Start Round 3: Add Delays
+                    </button>
+                `;
+            } else if (state.currentRound === 3) {
+                controlPanel.innerHTML = `
+                    <button class="btn btn-success" onclick="showReveal()">
+                        🎉 Show The Reveal
+                    </button>
+                `;
+            }
+        }
+
+        function renderPackage(pkg) {
+            const progress = (pkg.currentHub / 4) * 100;
+            let statusClass = 'status-pending';
+            let statusText = 'Pending';
+            
+            if (pkg.duplicate) {
+                statusClass = 'status-duplicate';
+                statusText = '⚠️ DUPLICATE';
+            } else if (pkg.delayed) {
+                statusClass = 'status-delayed';
+                statusText = '🔴 DELAYED';
+            } else if (pkg.status === 'delivered') {
+                statusClass = 'status-delivered';
+                statusText = '✓ Delivered';
+            } else if (pkg.status === 'in-transit') {
+                statusClass = 'status-transit';
+                statusText = 'In Transit';
+            }
+            
+            return `
+                <div class="package-track">
+                    <div class="package-header">
+                        <div class="package-id">${pkg.id}</div>
+                        <div class="package-status ${statusClass}">${statusText}</div>
+                    </div>
+                    <div class="tracking-visual">
+                        <div class="progress-line">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                        ${pkg.currentHub > 0 && pkg.currentHub < 4 ? 
+                            `<div class="package-icon" style="left: ${((pkg.currentHub - 0.5) / 4) * 100}%">📦</div>` : ''}
+                        ${HUBS.map((hub, idx) => `
+                            <div class="hub-point">
+                                <div class="hub-icon ${
+                                    pkg.currentHub === idx ? 'active' :
+                                    pkg.currentHub > idx ? 'completed' :
+                                    pkg.delayed && pkg.currentHub === idx ? 'delayed' : ''
+                                }">
+                                    ${hub.icon}
+                                </div>
+                                <div class="hub-name">${hub.label}</div>
+                                <div class="hub-system">${hub.system}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function showScreen(screenId) {
+            document.getElementById('waitingScreen').classList.add('hidden');
+            document.getElementById('playingScreen').classList.add('hidden');
+            document.getElementById('revealScreen').classList.add('hidden');
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        // Button handlers
+        document.getElementById('startBtn').addEventListener('click', () => {
+            socket.emit('startGame');
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            socket.emit('resetGame');
+        });
+
+        function nextRound() {
+            socket.emit('nextRound');
+        }
+
+        function showReveal() {
+            socket.emit('showReveal');
+        }
+    </script>
+</body>
+</html>
