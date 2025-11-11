@@ -493,6 +493,8 @@
                     <button class="start-btn" id="startBtn" disabled>
                         🏁 Start Race!
                     </button>
+                    <button class="reset-btn" id="resetBtnWaiting">🔄 Reset Game</button>
+
                     <p style="color: var(--color-error); margin-top: 20px; font-size: 1.1rem;" id="minPlayerMsg">
                         Need at least 3 racers...
                     </p>
@@ -726,6 +728,12 @@
         document.getElementById('skipBtn').addEventListener('click', () => {
             socket.emit('skipRace');
         });
+
+        // --- Reset Game from Waiting Screen ---
+        document.getElementById('resetBtnWaiting').addEventListener('click', () => {
+            socket.emit('resetGame');
+        });
+
 
     </script>
 </body>
