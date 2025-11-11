@@ -30,8 +30,8 @@ npm start
 You'll see:
 🏇 Horse Racing Game!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🖥️  Admin Display: http://localhost:3000
-📱 Players Join:  http://192.168.1.45:3000/play
+🖥️  Admin Display: https://synovusgame.onrender.com/
+📱 Players Join:  https://synovusgame.onrender.com/play
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Setup for Presentation
 
