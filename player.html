@@ -510,18 +510,21 @@
         
         tapButton.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            if (canTap) {
+            if (canTap && myTeamId) {
                 tap();
             }
         });
         
-        tapButton.addEventListener('click', () => {
-            if (canTap) {
+        tapButton.addEventListener('click', (e) => {
+            if (canTap && myTeamId) {
                 tap();
             }
         });
 
         function tap() {
+            // Double check we can actually tap
+            if (!canTap) return;
+            
             socket.emit('tap');
             myTaps++;
             document.getElementById('tapCount').textContent = `${myTaps} taps`;
@@ -540,6 +543,8 @@
             } else if (state.status === 'countdown') {
                 showScreen('racingScreen');
                 canTap = false;
+                tapButton.style.opacity = '0.5';
+                tapButton.style.cursor = 'not-allowed';
                 document.getElementById('statusText').textContent = `Get Ready! ${state.countdownTime}...`;
                 document.getElementById('statusText').style.color = '#ef4444';
             } else if (state.status === 'racing') {
@@ -566,13 +571,18 @@
                         const progress = Math.min(100, Math.round(myTeam.position));
                         document.getElementById('progressFill').style.width = `${progress}%`;
                         
+                        // Control tapping based on team's canRace status
                         if (myTeam.canRace) {
                             canTap = true;
+                            tapButton.style.opacity = '1';
+                            tapButton.style.cursor = 'pointer';
                             document.getElementById('statusText').textContent = 'TAP TAP TAP!!!';
                             document.getElementById('statusText').style.color = '#10b981';
                         } else {
                             canTap = false;
-                            document.getElementById('statusText').textContent = `Starting in ${myTeam.staggerDelay}s...`;
+                            tapButton.style.opacity = '0.5';
+                            tapButton.style.cursor = 'not-allowed';
+                            document.getElementById('statusText').textContent = `Gate opens soon...`;
                             document.getElementById('statusText').style.color = '#fbbf24';
                         }
                         
@@ -592,6 +602,8 @@
                 }
             } else if (state.status === 'finished') {
                 canTap = false;
+                tapButton.style.opacity = '0.5';
+                tapButton.style.cursor = 'not-allowed';
                 const myPlayer = state.players.find(p => p.id === socket.id);
                 if (myPlayer && myPlayer.teamId) {
                     const myTeam = state.teams.find(t => t.id === myPlayer.teamId);

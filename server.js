@@ -80,7 +80,7 @@ io.on('connection', (socket) => {
             const player = gameState.players.find(p => p.id === socket.id);
             if (player && player.teamId) {
                 const team = gameState.teams.find(t => t.id === player.teamId);
-                if (team && team.canRace) {
+                if (team && team.canRace && team.position < RACE_DISTANCE) {
                     player.taps++;
                     team.velocity += SPEED_PER_TAP;
                     team.totalTaps++;
