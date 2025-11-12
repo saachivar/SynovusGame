@@ -1,3 +1,5 @@
+
+
 const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
@@ -20,7 +22,7 @@ let gameState = {
 };
 
 const RACE_DISTANCE = 100; // 100%
-const STAGGER_TIMES = [0, 5000, 10000]; // Team 1: 0s, Team 2: 5s delay, Team 3: 10s delay
+const STAGGER_TIMES = [0, 2000, 4000]; // Team 1: 0s, Team 2: 2s delay, Team 3: 4s delay
 const SPEED_PER_TAP = 0.04; // How much progress per tap (reduced to require ~600 taps per team)
 const FRICTION = 0.02; // Natural slowdown per tick (reduced)
 
@@ -56,7 +58,6 @@ app.get('/qr', async (req, res) => {
     }
 });
 
-
 io.on('connection', (socket) => {
     console.log('New client connected:', socket.id);
     socket.emit('gameState', gameState);
@@ -80,7 +81,7 @@ io.on('connection', (socket) => {
             const player = gameState.players.find(p => p.id === socket.id);
             if (player && player.teamId) {
                 const team = gameState.teams.find(t => t.id === player.teamId);
-                if (team && team.canRace) {
+                if (team && team.canRace && team.position < RACE_DISTANCE) {
                     player.taps++;
                     team.velocity += SPEED_PER_TAP;
                     team.totalTaps++;
@@ -110,27 +111,6 @@ io.on('connection', (socket) => {
         gameState.players = gameState.players.filter(p => p.id !== socket.id);
         io.emit('gameState', gameState);
     });
-
-    socket.on('skipRace', () => {
-        // Only allow if there are players
-        if (gameState.players.length > 0) {
-            assignTeams(); // make sure teams exist
-            gameState.status = 'finished';
-            
-            // Simulate taps and finish positions
-            gameState.teams.forEach(team => {
-                team.position = RACE_DISTANCE;
-                team.totalTaps = 1000; // arbitrary high number
-                team.startTime = Date.now() - 5000; // pretend race started 5s ago
-                team.finishTime = Date.now();
-                team.raceTime = ((team.finishTime - team.startTime) / 1000).toFixed(2);
-            });
-            
-            calculateResults(); // sort winner
-            io.emit('gameState', gameState);
-        }
-    });
-    
 });
 
 function startRace() {
@@ -258,10 +238,10 @@ function calculateResults() {
 }
 
 server.listen(PORT, () => {
-    console.log(`\n🏇 Horse Racing Game Live!\n`);
+    const ip = getLocalIP();
+    console.log(`\n🏇 Horse Racing Game!\n`);
     console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
     console.log(`🖥️  Admin Display: https://synovusgame.onrender.com`);
     console.log(`📱 Players Join:   https://synovusgame.onrender.com/play`);
     console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
 });
-
