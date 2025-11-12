@@ -8,7 +8,7 @@ An engaging multiplayer game that demonstrates Synovus' Tracer System through a 
 - **🎯 Auto Team Assignment**: Players are randomly assigned to teams when the game starts
 - **✨ Smooth Animations**: Beautiful animations throughout the game experience
 - **🎲 Three Game Rounds**: 
-  - Round 1: Normal shippingg
+  - Round 1: Normal shipping
   - Round 2: Holiday chaos with duplicates
   - Round 3: System delays
 - **🎉 Educational Reveal**: Shows how the game mirrors real Synovus transaction tracking
