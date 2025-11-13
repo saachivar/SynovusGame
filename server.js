@@ -183,7 +183,7 @@ function startRaceLoop() {
                 
                 // DEMO: Service disruption scenarios
                 // Team C at 250 taps - full disconnection
-                if (team.name === 'Horse C' && team.totalTaps >= 250 && !team.disrupted) {
+                if (team.name === 'Horse C' && team.totalTaps >= 500 && !team.disrupted) {
                     team.disrupted = true;
                     team.disruptionType = 'disconnected';
                     io.emit('serviceDisruption', { teamId: team.id, type: 'disconnected' });
@@ -191,7 +191,7 @@ function startRaceLoop() {
                 }
                 
                 // Team B at 450 taps - disconnected but can still tap
-                if (team.name === 'Horse B' && team.totalTaps >= 450 && !team.disrupted) {
+                if (team.name === 'Horse B' && team.totalTaps >= 900 && !team.disrupted) {
                     team.disrupted = true;
                     team.disruptionType = 'disconnected-continue';
                     io.emit('serviceDisruption', { teamId: team.id, type: 'disconnected-continue' });

@@ -690,7 +690,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             display: none;
         " onclick="skipToFinish()">
-            ⏭️ Skip to Finish (Testing)
+            Skip to Finish
         </button>
     </div>
 
@@ -754,9 +754,7 @@
         }
 
         function skipToFinish() {
-            if (confirm('Skip to finish? (Testing only)')) {
-                socket.emit('skipToFinish');
-            }
+            socket.emit('skipToFinish');
         }
 
         function resetGame() {
