@@ -1,199 +1,213 @@
-# 🎮 Trace the Package - Interactive Game
+🏇 Horse Racing Game - Transaction Tracker Demo
+An exciting, interactive multiplayer game that demonstrates Synovus' Transaction Tracer System through a competitive horse race where players spam-tap their phones to move their team's horse to victory!
+🎮 What Is This?
+A real-time multiplayer game where:
 
-An engaging multiplayer game that demonstrates Synovus' Tracer System through a fun package delivery simulation. Players join via their phones using QR codes and work in teams to track packages through delivery hubs.
+Players join via QR code on their phones
+Randomly assigned to 3 teams (Horse A, B, or C)
+Race with staggered starts (A starts first, B after 2s, C after 4s)
+Tap frantically to make their horse go faster
+First horse to cross the finish line wins!
 
-## 🌟 Features
+After the race, players learn how the game mirrors Synovus' Transaction Tracer System.
 
-- **📱 Mobile-First**: Players join using their phones by scanning a QR code
-- **🎯 Auto Team Assignment**: Players are randomly assigned to teams when the game starts
-- **✨ Smooth Animations**: Beautiful animations throughout the game experience
-- **🎲 Three Game Rounds**: 
-  - Round 1: Normal shipping
-  - Round 2: Holiday chaos with duplicates
-  - Round 3: System delays
-- **🎉 Educational Reveal**: Shows how the game mirrors real Synovus transaction tracking
+🚀 Quick Start
+Prerequisites
 
-## 📋 Prerequisites
+Node.js (v14 or higher)
+npm (comes with Node.js)
+WiFi network (all devices must be on same network)
 
-- Node.js (v14 or higher)
-- npm (comes with Node.js)
+Installation
+bash# 1. Navigate to the game folder
+cd ~/Desktop/files
 
-## 🚀 Quick Start
-
-### 1. Install Dependencies
-
-```bash
+# 2. Install dependencies
 npm install
-```
 
-### 2. Start the Server
-
-```bash
+# 3. Start the server
 npm start
-```
+You'll see:
+🏇 Horse Racing Game!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🖥️  Admin Display: https://synovusgame.onrender.com/
+📱 Players Join:  https://synovusgame.onrender.com/play
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Setup for Presentation
+Players scan QR code or visit the /play URL
+Once 3+ players join, click "Start Race!"
 
-The server will start on `http://localhost:3000`
 
-### 3. Setup for Presentation
+🎯 How the Game Works
+The Setup
+3 Horses racing on straight tracks:
 
-**On the Main Display (Projector/TV):**
-- Open a web browser
-- Navigate to `http://localhost:3000`
-- This shows the admin view with QR code and game progress
+Horse A 🐴 ━━━━━━━━━━━━━━━━━━━━━━━► FINISH
+         [Starts at 0 seconds]
 
-**For Players:**
-- Players scan the QR code with their phones
-- Or manually visit the URL shown on screen
-- Enter their name and join the game
+Horse B 🐴 ━━━━━━━━━━━━━━━━━━━━━━━► FINISH
+         [Starts at 2 seconds]
 
-## 🎮 How to Play
+Horse C 🐴 ━━━━━━━━━━━━━━━━━━━━━━━► FINISH
+         [Starts at 4 seconds]
+The Race Flow
 
-### Setup Phase
-1. Display the admin screen on a projector/TV
-2. Players scan the QR code or visit the join URL
-3. Players enter their names on their phones
-4. Once at least 2 players have joined, click "Start Game"
+Players Join → Scan QR, enter name, assigned to team
+Teams Announced → See which horse and teammates
+Countdown → 3... 2... 1...
+Staggered Start → Gates open at 0s, 2s, 4s
+RACE! → Tap giant button, all taps help same horse
+Finish → First horse to cross wins, game ends immediately
+The Reveal → Learn about Synovus Tracer System
 
-### Game Phase
-1. Players are automatically assigned to teams (shown on both screens)
-2. Each team has 3 packages to deliver through 4 hubs:
-   - 🏭 Warehouse (Frontend System)
-   - 🚚 Truck (API Layer)
-   - 📦 Sorting Center (Backend System)
-   - 🏠 Doorstep (User Confirmation)
-3. Players tap "Move Forward" on their phones to advance packages
-4. Progress through three rounds with increasing complexity
 
-### Rounds
-- **Round 1**: Normal operations - track packages through the system
-- **Round 2**: Holiday chaos - some packages get duplicated
-- **Round 3**: System delays - identify and resolve delays
+📱 What Players See on Their Phone
+Racing Screen Layout (Top to Bottom):
+┌─────────────────────────────┐
+│      You are:               │
+│      Horse A                │ ← Your team name
+├─────────────────────────────┤
+│ Horse A   Horse B   Horse C │
+│   234       189       156   │ ← All teams' tap counts
+├─────────────────────────────┤
+│ TAP TAP TAP!!!              │
+│ [████████░░░░] 80%          │ ← Your progress
+├─────────────────────────────┤
+│                             │
+│        [GIANT TAP           │
+│         BUTTON]             │ ← Spam this!
+│         👆 TAP!             │
+│        234 taps             │
+│                             │
+└─────────────────────────────┘
 
-### The Reveal
-After completing all rounds, the game reveals how the package tracking mirrors Synovus' real tracer system:
-- Package = Transaction
-- Tracking ID = Trace ID
-- Each hub = System layer in the payment flow
+🖥️ Admin Display Features
+Shows:
 
-## 🏗️ Architecture
+QR code for joining (during setup)
+Race tracks with 3 horses
+Start gates that disappear when opened
+Real-time horse movement (animated)
+Live tap statistics for each team
+Finish line and race completion
+Podium with winner celebration
+Educational reveal about Tracer System
 
-```
-trace-the-package/
-├── server.js          # Node.js server with Socket.io
-├── admin.html         # Main display for projector/TV
-├── player.html        # Mobile interface for players
-├── package.json       # Dependencies
-└── README.md         # This file
-```
 
-## 🔧 Configuration
+⚙️ Game Settings
+Current configuration in server.js:
+javascriptconst RACE_DISTANCE = 100;              // 100% to finish
+const STAGGER_TIMES = [0, 2000, 4000];  // 0s, 2s, 4s delays
+const SPEED_PER_TAP = 0.04;             // ~600 taps needed per team
+const FRICTION = 0.02;                  // Natural slowdown
+To Adjust Difficulty:
+Make it easier (fewer taps):
+javascriptconst SPEED_PER_TAP = 0.08;  // ~300 taps to win
+Make it harder (more taps):
+javascriptconst SPEED_PER_TAP = 0.02;  // ~1200 taps to win
 
-### Changing the Port
-Edit `server.js` and modify:
-```javascript
-const PORT = 3000;  // Change to your desired port
-```
+🎓 Educational Connection
+Game → Real Synovus System
+Game FeatureReal System🐴 HorsesFinancial Transactions🚪 Staggered StartPriority Transaction Levels👆 TappingSystem Processing Power📊 Real-time StatsTracer Dashboard🏁 Race TrackTransaction Pipeline⏱️ Finish TimesLatency Measurements
+The Reveal
+Players learn that just like tracking horses through the race, Synovus' Tracer System tracks every transaction with:
 
-### Network Setup for Multiple Devices
-To allow phones to connect:
+Complete visibility from start to finish
+Priority level management
+Real-time monitoring
+Latency measurement
+No transactions lost or unaccounted for
 
-1. Find your computer's IP address:
-   - **Windows**: `ipconfig` (look for IPv4 Address)
-   - **Mac/Linux**: `ifconfig` or `ip addr`
 
-2. Update the QR code URL in `server.js`:
-```javascript
-const url = `http://YOUR_IP_ADDRESS:3000/play`;
-```
+🎪 Tips for Presenters
+Build Energy During Race:
 
-3. Make sure your firewall allows connections on port 3000
+"Horse A takes off first!"
+"Gate opening for Horse B... NOW!"
+"Look at those taps! Horse C catching up!"
+"WHO'S GONNA WIN?!"
 
-4. All devices must be on the same network
+Explain While Racing:
 
-## 📱 Mobile Compatibility
+"Notice Horse A started first - that's priority transactions"
+"Every tap is processing power"
+"Horse C can still win with aggressive tapping!"
 
-The player interface is optimized for:
-- iOS Safari
-- Android Chrome
-- Modern mobile browsers
+After the Race:
 
-## 🎨 Customization
+Congratulate winner
+Show podium
+Click "Show The Reveal"
+Explain connections to real system
 
-### Team Colors
-Edit the `teamColors` array in `server.js`:
-```javascript
-const teamColors = ['#f093fb', '#4facfe', '#43e97b', '#fa709a'];
-```
 
-### Package IDs
-Modify the package initialization in `assignTeams()`:
-```javascript
-packages: ['TXN001', 'TXN002', 'TXN003']
-```
+🐛 Troubleshooting
+Players Can't Connect
 
-### Hubs
-Update the `HUBS` constant in both `admin.html` and `player.html`
+✅ All devices on same WiFi?
+✅ Using network IP (not localhost)?
+✅ Firewall allowing Node.js?
+✅ Try manual URL instead of QR code
 
-## 🐛 Troubleshooting
+Game Won't Start
 
-**QR Code not showing:**
-- Check that the server started successfully
-- Look for "Server running on..." in console
+✅ Need minimum 3 players
+✅ Check player count on screen
 
-**Players can't connect:**
-- Ensure all devices are on the same WiFi network
-- Check firewall settings
-- Verify the IP address in the QR code is correct
+Horses Not Moving
 
-**Game not starting:**
-- Minimum 2 players required
-- Check browser console for errors
+✅ Players must tap actively
+✅ Check gates have opened
+✅ Verify phones on racing screen
 
-## 💡 Tips for Best Experience
 
-1. **Test Before Presenting**: Run through once before your actual demo
-2. **Stable Network**: Use a reliable WiFi network
-3. **Screen Size**: Admin view works best on large displays
-4. **Player Count**: Works great with 4-16 players
-5. **Round Timing**: Don't rush - let players experience each round
+🎯 Best Practices
+Optimal Setup
 
-## 🔄 Reset Game
+Players: 6-18 people (2-6 per team)
+Duration: 2-3 minutes per race
+Display: Large screen or projector
+WiFi: Strong, stable connection
 
-To start a new game session, click "Play Again" on the reveal screen. This will:
-- Clear all players
-- Reset teams
-- Return to the QR code screen for new players to join
+For Success
 
-## 📊 Technical Stack
+Test with 2-3 people first
+Explain rules before starting
+Narrate the race energetically
+Connect back to education at end
+Answer questions about real system
 
-- **Backend**: Node.js + Express
-- **Real-time Communication**: Socket.io
-- **QR Code Generation**: qrcode library
-- **Frontend**: Vanilla JavaScript (no frameworks)
-- **Styling**: Pure CSS with animations
 
-## 🎯 Educational Use
+🎨 Quick Customization
+Change Difficulty
+Edit server.js:
+javascriptconst SPEED_PER_TAP = 0.06;  // Easier
+const SPEED_PER_TAP = 0.03;  // Harder
+Change Stagger Times
+javascriptconst STAGGER_TIMES = [0, 3000, 6000];  // 0s, 3s, 6s
 
-This game effectively demonstrates:
-- Distributed system tracking
-- Transaction monitoring
-- Duplicate detection
-- Latency identification
-- End-to-end visibility
+📁 Files Included
 
-Perfect for:
-- Team building events
-- Training sessions
-- Customer demonstrations
-- Conference presentations
+server.js - Game engine and logic
+admin.html - Main display interface
+player.html - Mobile player interface
+package.json - Dependencies
+README.md - This file
 
-## 📞 Support
 
-For issues or questions:
-1. Check the troubleshooting section above
-2. Verify all prerequisites are installed
-3. Check console logs for errors
+🆘 Quick Fixes
+Server won't start:
+bashnpm install
+Wrong IP address:
+bash# Mac/Linux: ifconfig
+# Windows: ipconfig
+Port already in use:
+javascript// In server.js, change:
+const PORT = 3001;
 
-## 🎉 Enjoy!
-
-Have fun demonstrating the power of Synovus' Tracer System through this interactive experience!
+🎮 Ready to Race!
+bashnpm install
+npm start
+# Open localhost:3000
+# Scan QR code
+# START RACE!
