@@ -21,7 +21,7 @@ let gameState = {
 
 const RACE_DISTANCE = 100; // 100%
 const STAGGER_TIMES = [0, 0, 0]; // Team 1: 0s, Team 2: 2s delay, Team 3: 4s delay
-const TAPS_TO_WIN = 1000; // Exactly 500 taps to finish
+const TAPS_TO_WIN = 1000; // Exactly 1000 taps to finish
 const SPEED_PER_TAP = 100 / TAPS_TO_WIN; // 0.2% per tap = 500 taps to reach 100%
 const FRICTION = 0; // No friction - every tap counts exactly
 
