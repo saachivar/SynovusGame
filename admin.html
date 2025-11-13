@@ -812,22 +812,17 @@
                         <div class="lane-info">
                             <div class="team-label" style="color: ${team.color}">
                                 ${team.name}
-                                ${team.finished ? '<span style="color: #10b981; font-size: 1.2rem; margin-left: 10px;">✅ SUCCESS!</span>' : ''}
+                                ${team.finished ? '<span style="color: #10b981; font-size: 1.2rem; margin-left: 10px;">✅ FINISHED!</span>' : ''}
                                 ${disruptionBadge}
                             </div>
                             <div style="font-size: 1rem; color: white; margin-top: 5px;">
                                 ${team.canRace && !team.finished ? `⏱️ ${team.currentTime}s | ${tapsRemaining} taps left` : ''}
-                                ${team.finished ? `⏱️ Finished in ${team.raceTime}s` : ''}
+                                ${team.finished ? `⏱️ Crossed finish line at ${team.raceTime}s` : ''}
                                 ${!team.canRace ? 'Waiting to start...' : ''}
                             </div>
                         </div>
-                        ${team.canRace && !team.finished ? `
-                        <div class="horse racing" style="left: ${horseLeft}; font-size: 4rem; ${team.disrupted && team.disruptionType === 'disconnected' ? 'opacity: 0.5; filter: grayscale(100%);' : ''}">
-                            ${team.emoji}
-                        </div>
-                        ` : ''}
-                        ${team.finished ? `
-                        <div class="horse" style="left: ${horseLeft}; font-size: 4rem;">
+                        ${team.canRace ? `
+                        <div class="horse ${!team.finished ? 'racing' : ''}" style="left: ${horseLeft}; font-size: 4rem; ${team.disrupted && team.disruptionType === 'disconnected' ? 'opacity: 0.5; filter: grayscale(100%);' : ''}; ${team.finished ? 'z-index: 20;' : ''}">
                             ${team.emoji}
                         </div>
                         ` : ''}
