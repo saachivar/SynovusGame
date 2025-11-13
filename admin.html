@@ -792,9 +792,9 @@
                 const tapsRemaining = Math.max(0, 1000 - team.totalTaps);
                 
                 // Accurate linear horse positioning:
-                // Track starts at 100px (after gate), ends at ~90% of container
-                // Horse moves linearly from 0% to 100% progress
-                const horseLeft = `calc(100px + ${progress * 0.80}%)`;
+                // Track starts at 100px (after gate), ends at finish line (right side)
+                // Horse moves linearly from 0% to 100% progress across entire track
+                const horseLeft = `calc(100px + ${progress * 0.87}%)`;
                 
                 // Demo disruption indicators
                 let disruptionBadge = '';
