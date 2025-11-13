@@ -20,8 +20,8 @@ let gameState = {
 };
 
 const RACE_DISTANCE = 100; // 100%
-const STAGGER_TIMES = [0, 2000, 4000]; // Team 1: 0s, Team 2: 2s delay, Team 3: 4s delay
-const TAPS_TO_WIN = 500; // Exactly 500 taps to finish
+const STAGGER_TIMES = [0, 0, 0]; // Team 1: 0s, Team 2: 2s delay, Team 3: 4s delay
+const TAPS_TO_WIN = 1000; // Exactly 1000 taps to finish
 const SPEED_PER_TAP = 100 / TAPS_TO_WIN; // 0.2% per tap = 500 taps to reach 100%
 const FRICTION = 0; // No friction - every tap counts exactly
 
@@ -49,8 +49,7 @@ function getLocalIP() {
 
 app.get('/qr', async (req, res) => {
     try {
-        const ip = getLocalIP();
-        const url = `http://${ip}:${PORT}/play`;
+        const url = 'https://synovusgame.onrender.com/play'; // 🌍 your Render app’s public URL
         const qrCode = await QRCode.toDataURL(url);
         res.json({ qrCode, url });
     } catch (err) {
@@ -93,7 +92,7 @@ io.on('connection', (socket) => {
                     team.totalTaps++;
                 }
                 // If team.canRace is false, tap is silently ignored (gate not open yet)
-                // If team.finished is true, tap is ignored (already at 500 taps)
+                // If team.finished is true, tap is ignored (already at 1000 taps)
             }
         }
     });
@@ -184,7 +183,7 @@ function startRaceLoop() {
                 
                 // DEMO: Service disruption scenarios
                 // Team C at 250 taps - full disconnection
-                if (team.name === 'Horse C' && team.totalTaps >= 250 && !team.disrupted) {
+                if (team.name === 'Horse C' && team.totalTaps >= 500 && !team.disrupted) {
                     team.disrupted = true;
                     team.disruptionType = 'disconnected';
                     io.emit('serviceDisruption', { teamId: team.id, type: 'disconnected' });
@@ -192,7 +191,7 @@ function startRaceLoop() {
                 }
                 
                 // Team B at 450 taps - disconnected but can still tap
-                if (team.name === 'Horse B' && team.totalTaps >= 450 && !team.disrupted) {
+                if (team.name === 'Horse B' && team.totalTaps >= 900 && !team.disrupted) {
                     team.disrupted = true;
                     team.disruptionType = 'disconnected-continue';
                     io.emit('serviceDisruption', { teamId: team.id, type: 'disconnected-continue' });
@@ -203,7 +202,7 @@ function startRaceLoop() {
                 team.position += team.velocity;
                 team.velocity = 0; // Reset velocity each tick (instant response to taps)
                 
-                // Check if team reached 500 taps (100%)
+                // Check if team reached 1000 taps (100%)
                 if (team.position >= RACE_DISTANCE && !team.finished) {
                     team.position = RACE_DISTANCE;
                     team.finished = true;
@@ -286,7 +285,7 @@ function assignTeams() {
 }
 
 function calculateResults() {
-    // Sort by finish time (who reached 500 taps first)
+    // Sort by finish time (who reached 1000 taps first)
     // Teams that finished go first, sorted by time
     // Teams that didn't finish go last, sorted by position
     gameState.teams.sort((a, b) => {
@@ -306,7 +305,8 @@ server.listen(PORT, () => {
     const ip = getLocalIP();
     console.log(`\n🏇 Horse Racing Game!\n`);
     console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-    console.log(`🖥️  Admin Display: http://localhost:${PORT}`);
-    console.log(`📱 Players Join:  http://${ip}:${PORT}/play`);
+    console.log(`🖥️  Admin Display: https://synovusgame.onrender.com`);
+    console.log(`📱 Players Join:   https://synovusgame.onrender.com/play`);
     console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
 });
+
