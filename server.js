@@ -21,8 +21,8 @@ let gameState = {
 
 const RACE_DISTANCE = 100; // 100%
 const STAGGER_TIMES = [0, 0, 0]; // Team 1: 0s, Team 2: 2s delay, Team 3: 4s delay
-const TAPS_TO_WIN = 1000; // Exactly 1000 taps to finish
-const SPEED_PER_TAP = 100 / TAPS_TO_WIN; // 0.2% per tap = 500 taps to reach 100%
+const TAPS_TO_WIN = 2000; // Exactly 2000 taps to finish
+const SPEED_PER_TAP = 100 / TAPS_TO_WIN; // 0.05% per tap = 2000 taps to reach 100%
 const FRICTION = 0; // No friction - every tap counts exactly
 
 app.get('/', (req, res) => {
@@ -184,26 +184,26 @@ function startRaceLoop() {
                 }
                 
                 // DEMO: Service disruption scenarios
-                // Team C at 500 taps - full disconnection
-                if (team.name === 'Horse C' && team.totalTaps >= 500 && !team.disrupted) {
+                // Team C at 1200 taps - full disconnection
+                if (team.name === 'Horse C' && team.totalTaps >= 1200 && !team.disrupted) {
                     team.disrupted = true;
                     team.disruptionType = 'disconnected';
                     io.emit('serviceDisruption', { teamId: team.id, type: 'disconnected' });
-                    console.log(`DEMO: Team C service disconnection at 500 taps`);
+                    console.log(`DEMO: Team C service disconnection at 1200 taps`);
                 }
                 
-                // Team B at 900 taps - disconnected and cannot tap, but horse continues to finish
-                if (team.name === 'Horse B' && team.totalTaps >= 900 && !team.disrupted) {
+                // Team B at 1750 taps - disconnected and cannot tap, but horse continues to finish
+                if (team.name === 'Horse B' && team.totalTaps >= 1750 && !team.disrupted) {
                     team.disrupted = true;
                     team.disruptionType = 'disconnected';
                     io.emit('serviceDisruption', { teamId: team.id, type: 'disconnected' });
-                    console.log(`DEMO: Team B service disconnection at 900 taps - but horse continues momentum`);
+                    console.log(`DEMO: Team B service disconnection at 1750 taps - but horse continues momentum`);
                     
-                    // Give Team B momentum to continue to finish (100 taps worth of progress)
+                    // Give Team B momentum to continue to finish (250 taps worth of progress)
                     // This simulates the system completing the transaction despite the disconnection
                     team.momentum = true;
                     team.momentumTicks = 0;
-                    team.momentumPerTick = 0.2; // 0.2% per tick to finish remaining 100 taps
+                    team.momentumPerTick = 0.05; // 0.05% per tick to finish remaining 250 taps
                 }
                 
                 // Apply velocity to position (no friction!)

@@ -545,7 +545,7 @@
             <!-- Racing Screen -->
             <div id="racingScreen" class="racing-screen">
                 <h2 style="color: #667eea; font-size: 2.5rem; text-align: center; margin-bottom: 30px;">
-                    🏁 RACE TO 1000 TAPS!
+                    🏁 RACE TO 2000 TAPS!
                 </h2>
                 
                 <div class="race-track">
@@ -653,37 +653,7 @@
                             </div>
                         </div>
                         
-                        <div style="margin-top: 50px; padding: 30px; background: rgba(255,255,255,0.2); border-radius: 15px;">
-                            <h3 style="font-size: 2rem; margin-bottom: 20px;">🎓 Key Insights</h3>
-                            
-                            <p style="font-size: 1.3rem; margin: 15px 0;">
-                                <strong>1. Real-Time Visibility is Everything:</strong> You watched every tap, every millisecond, every status change live. That's Tracer - complete transparency into transaction flow. No delays, no guessing where things are stuck.
-                            </p>
-                            
-                            <p style="font-size: 1.3rem; margin: 15px 0;">
-                                <strong>2. Staggered Processing Queues Work:</strong> Team A's gate opened first because high-priority transactions process immediately. Teams B and C queued in order. This is exactly how our priority queues manage millions of transactions.
-                            </p>
-                            
-                            <p style="font-size: 1.3rem; margin: 15px 0;">
-                                <strong>3. Service Disruptions are Detected Instantly:</strong> When Team B and Team C failed, you saw it happen in real-time. In production, Tracer catches processing node failures, network issues, and timeouts in milliseconds - not hours.
-                            </p>
-                            
-                            <p style="font-size: 1.3rem; margin: 15px 0;">
-                                <strong>4. Parallelization Speeds Everything Up:</strong> Collective tapping = parallel processing. More people = more processing power. Team A finished fastest because they had the most people tapping simultaneously, showing how horizontal scaling works.
-                            </p>
-                            
-                            <p style="font-size: 1.3rem; margin: 15px 0;">
-                                <strong>5. Failed Transactions Don't Disappear:</strong> Team C and B didn't vanish - we tracked exactly where they failed, at what point, and for how long. Every transaction has a complete audit trail from start (or failure) to finish.
-                            </p>
-                            
-                            <p style="font-size: 1.3rem; margin: 15px 0;">
-                                <strong>6. Recovery Doesn't Lose Progress:</strong> Team B recovered after disconnection but didn't restart from zero. Similarly, Tracer's recovery mechanisms preserve state, ensuring no duplicate processing or lost work.
-                            </p>
-                            
-                            <p style="font-size: 1.3rem; margin: 15px 0;">
-                                <strong>7. You Can't Optimize What You Can't See:</strong> The instant you saw Team A winning, you understood bottlenecks. Tracer gives banks the same visibility - so they can add capacity, optimize queues, and guarantee SLAs.
-                            </p>
-                        </div>
+
                         
                         <p style="font-size: 1.8rem; margin-top: 50px; font-weight: 700;">
                             <strong>Synovus' Tracer System provides this level of visibility and control for millions of real financial transactions every day.</strong>
@@ -844,7 +814,7 @@
                 return `
                 <div class="stat-card" style="${cardStyle}">
                     <div class="stat-team" style="color: ${team.color}">${team.name}</div>
-                    <div class="stat-value">${team.totalTaps} / 1000</div>
+                    <div class="stat-value">${team.totalTaps} / 2000</div>
                     <div class="stat-label">
                         ${team.finished ? `✅ Done in ${team.raceTime}s` : team.canRace ? `⏱️ ${team.currentTime}s` : 'Not started'}
                         ${team.disrupted && team.disruptionType === 'disconnected' ? '<div style="color: #ef4444; margin-top: 5px;">⚠️ DISCONNECTED</div>' : ''}
