@@ -500,10 +500,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🏇 Horse Race: A vs B vs C</h1>
-            <p style="font-size: 1.5rem;">Tap Fast to Win!</p>
-        </div>
+
         
         <div class="game-card">
             <!-- Waiting Screen -->
@@ -596,77 +593,15 @@
                         🔄 Reset & Race Again
                     </button>
                 </div>
-                
-                <div id="revealContent" style="display: none;">
-                    <div class="reveal-content">
-                        <h2>🎯 What You Just Experienced: Real Transaction Tracking</h2>
-                        <p><strong>This wasn't just a game - you experienced Synovus' Tracer System in action!</strong></p>
-                        
-                        <div class="mapping-grid">
-                            <div class="mapping-card">
-                                <h3>🐴 Three Horses</h3>
-                                <p>= Three different transaction types with different priority levels moving through our system</p>
-                            </div>
-                            <div class="mapping-card">
-                                <h3>🚪 Staggered Start Gates</h3>
-                                <p>= Transaction Priority Queues - High priority transactions (Team A) process immediately, others queue based on priority</p>
-                            </div>
-                            <div class="mapping-card">
-                                <h3>👆 Your Taps (1000 to Win)</h3>
-                                <p>= System Processing Capacity - More resources dedicated = faster transaction completion</p>
-                            </div>
-                            <div class="mapping-card">
-                                <h3>⏱️ Real-time Timers</h3>
-                                <p>= Transaction Latency Monitoring - We measure exactly how long each transaction takes from start to finish</p>
-                            </div>
-                            <div class="mapping-card">
-                                <h3>🏁 Race to 1000 Taps</h3>
-                                <p>= Transaction Pipeline - Every transaction must complete all processing steps to reach completion</p>
-                            </div>
-                            <div class="mapping-card">
-                                <h3>✅ SUCCESS Messages</h3>
-                                <p>= Transaction Completion Confirmation - Instant notification when processing completes successfully</p>
-                            </div>
-                            <div class="mapping-card">
-                                <h3>⚠️ Team C Disconnection (250 taps)</h3>
-                                <p>= Critical Service Failure Detection - System immediately identifies when a processing node goes offline</p>
-                            </div>
-                            <div class="mapping-card">
-                                <h3>⚠️ Team B Degraded Mode (450 taps)</h3>
-                                <p>= Service Degradation Alert - System detects performance issues but maintains continuity</p>
-                            </div>
-                            <div class="mapping-card">
-                                <h3>📊 Live Stats Dashboard</h3>
-                                <p>= Real-time Transaction Monitoring - Every tap, every millisecond, every transaction status visible instantly</p>
-                            </div>
-                            <div class="mapping-card">
-                                <h3>🏆 Winner by Fastest Time</h3>
-                                <p>= Performance Metrics - We track which transaction types complete fastest and optimize accordingly</p>
-                            </div>
-                            <div class="mapping-card">
-                                <h3>👥 Team Sizes (A > B > C)</h3>
-                                <p>= Resource Allocation - Critical transactions get more processing power allocated to them</p>
-                            </div>
-                            <div class="mapping-card">
-                                <h3>📱 Pending Results Screen</h3>
-                                <p>= Settlement Processing - Brief window between transaction completion and final confirmation</p>
-                            </div>
-                        </div>
-                        
 
-                        
-                        <p style="font-size: 1.8rem; margin-top: 50px; font-weight: 700;">
-                            <strong>Synovus' Tracer System provides this level of visibility and control for millions of real financial transactions every day.</strong>
-                        </p>
-                        
-                        <button class="reset-btn" onclick="resetGame()" style="margin-top: 40px;">
-                            🔄 Race Again
-                        </button>
-                    </div>
+                
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="reset-btn" onclick="resetGame()">
+                        🔄 Reset & Race Again
+                    </button>
                 </div>
             </div>
         </div>
-        
         <!-- Skip Button for Testing (bottom right corner) -->
         <button id="skipBtn" style="
             position: fixed;
@@ -847,11 +782,6 @@
                 s.classList.remove('active');
             });
             document.getElementById(screenId).classList.add('active');
-        }
-
-        function showReveal() {
-            document.getElementById('revealContent').style.display = 'block';
-            document.querySelector('.reveal-btn').style.display = 'none';
         }
 
         function resetGame() {
