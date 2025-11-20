@@ -680,7 +680,7 @@
             const lanes = document.getElementById('lanes');
             lanes.innerHTML = state.teams.map(team => {
                 const progress = Math.min(100, team.position);
-                const tapsRemaining = Math.max(0, 1000 - team.totalTaps);
+                const tapsRemaining = Math.max(0, 2000 - team.totalTaps);
                 
                 // Accurate linear horse positioning:
                 // Track starts at 100px (after gate), ends at finish line (right side)

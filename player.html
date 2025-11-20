@@ -366,7 +366,7 @@
             height: 100%;
             background: linear-gradient(90deg, #10b981 0%, #059669 100%);
             transition: width 0.3s;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+            box-shadow: none;
         }
         
         .result-screen {
@@ -587,7 +587,8 @@
                         `).join('');
                         
                         // Always update progress bar during racing
-                        const progress = Math.min(100, Math.round(myTeam.position));
+                        // Progress = (total team taps / 2000) * 100
+                        const progress = Math.min(100, (myTeam.totalTaps / 2000) * 100);
                         document.getElementById('progressFill').style.width = `${progress}%`;
                         
                         const tapsRemaining = Math.max(0, 2000 - myTeam.totalTaps);
